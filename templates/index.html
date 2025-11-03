@@ -2,51 +2,154 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>NeuraCast Communication Hub</title>
+<title>🌌 NeuraCast Galaxy Edition 🌌</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
 body {
-  background: radial-gradient(circle at center, #0a0a0a, #000);
-  color: #00ffe7;
-  font-family: 'Orbitron', sans-serif;
-  text-align: center;
-  margin-top: 100px;
+  margin:0;
+  font-family:'Orbitron', sans-serif;
+  overflow:hidden;
+  background:#000;
+  color:#0ff;
 }
-#signal-box {
-  margin: 30px auto;
-  width: 60%;
-  padding: 20px;
-  border: 2px solid #00ffe7;
-  border-radius: 10px;
-  box-shadow: 0 0 15px #00ffe7;
+
+/* Starfield canvas */
+#stars {
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:-2;
 }
-input {
-  width: 60%;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  background: #001;
-  color: #00ffe7;
+
+/* Nebula background overlay */
+#nebula {
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background: radial-gradient(circle at 50% 50%, rgba(0,255,231,0.1), transparent 80%);
+  z-index:-1;
 }
-button {
-  background: #00ffe7;
-  color: #000;
-  border: none;
-  padding: 10px 20px;
-  margin-left: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
+
+/* Hub container */
+#hub{
+  width:100%;
+  height:70vh;
+  position:relative;
 }
-.signal {
-  margin: 5px;
-  padding: 10px;
-  border-bottom: 1px solid #00ffe7;
+
+/* Nodes as orbiting planets */
+.node{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:2em;
+  position:absolute;
+  border:3px solid #0ff;
+  box-shadow:0 0 30px #0ff, 0 0 60px #0ff inset;
+  cursor:pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.node:hover{
+  transform:scale(1.2);
+  box-shadow:0 0 50px #0ff, 0 0 80px #0ff inset;
+}
+.node::after{
+  content:attr(data-name);
+  position:absolute;
+  bottom:-25px;
+  color:#0ff;
+  font-size:1em;
+}
+
+/* Holographic signal panel */
+#signal-box{
+  width:70%;
+  margin:20px auto;
+  padding:20px;
+  background:rgba(0,255,231,0.05);
+  border:1px solid #0ff;
+  border-radius:15px;
+  box-shadow:0 0 20px #0ff;
+}
+input{
+  width:60%;
+  padding:10px;
+  border:none;
+  border-radius:5px;
+  background:#001;
+  color:#0ff;
+  outline:none;
+}
+button{
+  padding:10px 20px;
+  margin-left:10px;
+  border:none;
+  border-radius:5px;
+  background:#0ff;
+  color:#000;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.3s;
+}
+button:hover{
+  background:#0ff;
+  transform:scale(1.05);
+}
+.signal{
+  margin:5px;
+  padding:10px;
+  border-bottom:1px solid #0ff;
+  animation:fadeIn 0.4s ease;
+}
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(-5px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+/* Pulse comet */
+.pulse{
+  position:absolute;
+  border-radius:50%;
+  pointer-events:none;
+  box-shadow:0 0 20px #0ff,0 0 40px #0ff inset;
+}
+
+/* Neural ripple */
+.wave{
+  position:absolute;
+  border:2px solid #0ff;
+  border-radius:50%;
+  opacity:0.5;
+  pointer-events:none;
+  animation:waveAnim 0.8s ease-out forwards;
+}
+@keyframes waveAnim{
+  from{transform:scale(1);opacity:0.5;}
+  to{transform:scale(3);opacity:0;}
 }
 </style>
 </head>
 <body>
-<h1>⚡ NeuraCast Communication Hub ⚡</h1>
+
+<canvas id="stars"></canvas>
+
+<h1 style="text-align:center;margin-top:20px;">🌌 NeuraCast Galaxy Edition 🌌</h1>
+
+<div id="hub">
+  <div id="systemA" class="node" data-name="System A">🧠</div>
+  <div id="systemB" class="node" data-name="System B">🤖</div>
+  <div id="systemC" class="node" data-name="AI Node">💡</div>
+</div>
+
 <div id="signal-box">
   <input id="signal-input" placeholder="Enter signal code...">
   <button onclick="sendSignal()">Transmit</button>
@@ -54,20 +157,136 @@ button {
 </div>
 
 <script>
-  var socket = io();
+var socket = io();
+const hub = document.getElementById('hub');
+const nodes = {
+  systemA:{angle:0,radius:0},
+  systemB:{angle:0,radius:0},
+  systemC:{angle:0,radius:0}
+};
 
-  function sendSignal() {
-    const val = document.getElementById("signal-input").value;
-    socket.emit('send_signal', val);
-    document.getElementById("signal-input").value = "";
+// Initial positions (orbiting style)
+const centerX = window.innerWidth/2;
+const centerY = hub.offsetHeight/2;
+const orbitRadius = 200;
+
+// Place nodes in orbit
+function positionNodes(){
+  let idx=0;
+  for(let id in nodes){
+    let angle = idx * 2*Math.PI/3; // 3 nodes spread
+    nodes[id].angle = angle;
+    let node = document.getElementById(id);
+    let x = centerX + orbitRadius*Math.cos(angle) - node.offsetWidth/2;
+    let y = centerY + orbitRadius*Math.sin(angle) - node.offsetHeight/2;
+    node.style.left = x + 'px';
+    node.style.top = y + 'px';
+    idx++;
   }
+}
+window.addEventListener('resize',positionNodes);
+positionNodes();
 
-  socket.on('broadcast_signal', function(data){
-    const div = document.createElement('div');
+// Animate pulses with trail
+function sendSignal(){
+  const val=document.getElementById('signal-input').value.trim();
+  if(val==='')return;
+  animatePulse('systemA','systemB',val,'#0ff');
+  document.getElementById('signal-input').value='';
+}
+
+function animatePulse(fromId,toId,data,color){
+  const fromNode=document.getElementById(fromId);
+  const toNode=document.getElementById(toId);
+
+  const startX=fromNode.offsetLeft+fromNode.offsetWidth/2;
+  const startY=fromNode.offsetTop+fromNode.offsetHeight/2;
+  const endX=toNode.offsetLeft+toNode.offsetWidth/2;
+  const endY=toNode.offsetTop+toNode.offsetHeight/2;
+
+  let progress=0,steps=250;
+  const trailDivs=[];
+  const interval=setInterval(()=>{
+    progress++;
+    const x=startX+(endX-startX)*(progress/steps);
+    const y=startY+(endY-startY)*(progress/steps);
+
+    const trail=document.createElement('div');
+    trail.classList.add('pulse');
+    trail.style.width='12px'; trail.style.height='12px';
+    trail.style.background=color;
+    trail.style.left=x+'px'; trail.style.top=y+'px';
+    trail.style.opacity=1-(progress/steps);
+    hub.appendChild(trail);
+    trailDivs.push(trail);
+
+    if(progress>=steps){
+      clearInterval(interval);
+      trailDivs.forEach(t=>hub.removeChild(t));
+      socket.emit('send_signal',data);
+      showWaveEffect(toId);
+      autoAIResponse(toId,data);
+    }
+  },20);
+}
+
+// Ripple
+function showWaveEffect(nodeId){
+  const node=document.getElementById(nodeId);
+  const wave=document.createElement('div');
+  wave.classList.add('wave');
+  wave.style.width=node.offsetWidth+'px';
+  wave.style.height=node.offsetHeight+'px';
+  wave.style.left=node.offsetLeft+'px';
+  wave.style.top=node.offsetTop+'px';
+  document.body.appendChild(wave);
+  setTimeout(()=>document.body.removeChild(wave),800);
+}
+
+// Receive & log signals
+socket.on('broadcast_signal',function(data){
+  const div=document.createElement('div');
+  div.classList.add('signal');
+  div.innerHTML='🧠→🤖 Neural Transmission: <b>'+data+'</b>';
+  document.getElementById('signals').prepend(div);
+});
+
+// AI Node auto-reply
+function autoAIResponse(nodeId,data){
+  if(nodeId!=='systemC')return;
+  setTimeout(()=>{
+    const reply='🤖 AI processed: '+data.toUpperCase();
+    animatePulse('systemC','systemA',reply,'#ff0');
+    const div=document.createElement('div');
     div.classList.add('signal');
-    div.innerHTML = "🧠 Received Signal: " + data;
-    document.getElementById("signals").prepend(div);
+    div.innerHTML='💡→🧠 '+reply;
+    document.getElementById('signals').prepend(div);
+  },1000);
+}
+
+/* Starfield canvas effect */
+const canvas=document.getElementById('stars');
+const ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+const stars=[];
+for(let i=0;i<200;i++){
+  stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.5,dx:(Math.random()-0.5)*0.2,dy:(Math.random()-0.5)*0.2});
+}
+function animateStars(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  stars.forEach(s=>{
+    s.x+=s.dx; s.y+=s.dy;
+    if(s.x<0)s.x=canvas.width;if(s.x>canvas.width)s.x=0;
+    if(s.y<0)s.y=canvas.height;if(s.y>canvas.height)s.y=0;
+    ctx.fillStyle='#0ff';
+    ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,2*Math.PI); ctx.fill();
   });
+  requestAnimationFrame(animateStars);
+}
+animateStars();
 </script>
+
 </body>
 </html>
+
+
