@@ -3,6 +3,7 @@ modules = ["python-3.11"]
 
 [nix]
 channel = "stable-25_05"
+packages = ["iana-etc"]
 
 [unitTest]
 language = "python3"
@@ -20,6 +21,10 @@ expertMode = true
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[[ports]]
+localPort = 38491
+externalPort = 3000
 
 [workflows]
 runButton = "Project"

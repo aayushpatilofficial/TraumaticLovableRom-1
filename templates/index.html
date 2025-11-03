@@ -1,81 +1,73 @@
-{% extends "base.html" %}
-{% block content %}
-<section class="grid gap-8">
-  <!-- Hero -->
-  <section class="grid gap-6 md:grid-cols-2 items-center">
-    <div>
-      <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">Passionate Creator | AI Enthusiast | Web Developer.</h1>
-      <p class="mt-4 text-gray-600">I’m Aayush, a passionate learner and creator with a deep interest in technology, AI, and web development. I enjoy building innovative projects that combine creativity with functionality—whether it’s designing sleek websites, developing smart applications, or exploring cutting-edge ideas in artificial intelligence. My portfolio reflects not only my technical skills but also my drive to keep learning, experimenting, and pushing boundaries. With every project, I aim to deliver work that is professional, impactful, and meaningful, while staying true to my vision of using technology to solve real-world problems..</p>
-      <div class="mt-6 flex gap-3">
-        <a href="#portfolio" class="px-4 py-3 rounded-md bg-indigo-600 text-white font-medium hover:bg-indigo-700">See portfolio</a>
-        <a href="#features" class="px-4 py-3 rounded-md border border-gray-200 text-gray-700">Explore features</a>
-      </div>
-    </div>
-    <div class="rounded-lg h-64 bg-gradient-to-tr from-indigo-500 to-pink-500 shadow-lg flex items-center justify-center text-white text-2xl font-bold">
-      HERO
-    </div>
-  </section>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NeuraCast Communication Hub</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<style>
+body {
+  background: radial-gradient(circle at center, #0a0a0a, #000);
+  color: #00ffe7;
+  font-family: 'Orbitron', sans-serif;
+  text-align: center;
+  margin-top: 100px;
+}
+#signal-box {
+  margin: 30px auto;
+  width: 60%;
+  padding: 20px;
+  border: 2px solid #00ffe7;
+  border-radius: 10px;
+  box-shadow: 0 0 15px #00ffe7;
+}
+input {
+  width: 60%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background: #001;
+  color: #00ffe7;
+}
+button {
+  background: #00ffe7;
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  margin-left: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.signal {
+  margin: 5px;
+  padding: 10px;
+  border-bottom: 1px solid #00ffe7;
+}
+</style>
+</head>
+<body>
+<h1>⚡ NeuraCast Communication Hub ⚡</h1>
+<div id="signal-box">
+  <input id="signal-input" placeholder="Enter signal code...">
+  <button onclick="sendSignal()">Transmit</button>
+  <div id="signals"></div>
+</div>
 
-  <!-- Features -->
-  <section id="features" class="grid gap-6 md:grid-cols-3">
-    <div class="p-6 bg-white rounded-xl shadow-sm">
-      <h3 class="font-semibold">Fast dev</h3>
-      <p class="mt-2 text-gray-600 text-sm">Tailwind CDN + Flask templates — iterate quickly without build tools.</p>
-    </div>
-    <div class="p-6 bg-white rounded-xl shadow-sm">
-      <h3 class="font-semibold">Responsive</h3>
-      <p class="mt-2 text-gray-600 text-sm">Mobile-first design that scales gracefully.</p>
-    </div>
-    <div class="p-6 bg-white rounded-xl shadow-sm">
-      <h3 class="font-semibold">Extendable</h3>
-      <p class="mt-2 text-gray-600 text-sm">APIs, contact handling, and portfolio endpoints ready for expansion.</p>
-    </div>
-  </section>
+<script>
+  var socket = io();
 
-  <!-- Portfolio -->
-  <section id="portfolio">
-    <h2 class="text-2xl font-bold">Portfolio</h2>
-    <p class="text-gray-600 mt-1 mb-4">Projects, demos, and prototypes.</p>
+  function sendSignal() {
+    const val = document.getElementById("signal-input").value;
+    socket.emit('send_signal', val);
+    document.getElementById("signal-input").value = "";
+  }
 
-    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {% for item in portfolio %}
-      <article class="bg-white rounded-xl shadow hover:scale-[1.01] transition-transform duration-200 p-4 flex flex-col gap-3">
-        <div class="h-32 rounded-md bg-gradient-to-r from-indigo-400 to-pink-400 flex items-center justify-center text-white font-semibold text-lg">
-          {{ item.title[:2] | upper }}
-        </div>
-        <h3 class="font-semibold">{{ item.title }}</h3>
-        <p class="text-sm text-gray-600">{{ item.desc }}</p>
-        <div class="flex flex-wrap gap-2">
-          {% for tag in item.tags %}
-            <span class="text-xs px-2 py-1 bg-gray-100 rounded">{{ tag }}</span>
-          {% endfor %}
-        </div>
-      </article>
-      {% endfor %}
-    </div>
-  </section>
-
-  <!-- Contact -->
-  <section id="contact" class="mt-8 bg-white rounded-xl p-6 shadow-sm">
-    <h2 class="text-xl font-bold">Contact</h2>
-    <p class="text-gray-600 mt-1">Send me a message — I check these regularly.</p>
-
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div class="mt-4 space-y-2">
-        {% for cat, msg in messages %}
-          <div class="p-3 rounded {{ 'bg-green-50 text-green-700' if cat=='success' else 'bg-red-50 text-red-700' }}">{{ msg }}</div>
-        {% endfor %}
-        </div>
-      {% endif %}
-    {% endwith %}
-
-    <form action="{{ url_for('contact') }}" method="post" class="mt-4 grid gap-3 sm:grid-cols-2">
-      <input name="name" placeholder="Your name" class="p-3 border rounded focus-ring" required>
-      <input name="email" type="email" placeholder="Your email" class="p-3 border rounded focus-ring" required>
-      <textarea name="message" placeholder="Your message" rows="5" class="p-3 border rounded sm:col-span-2 focus-ring" required></textarea>
-      <button type="submit" class="sm:col-span-2 px-4 py-3 rounded bg-indigo-600 text-white">Send message</button>
-    </form>
-  </section>
-</section>
-{% endblock %}
+  socket.on('broadcast_signal', function(data){
+    const div = document.createElement('div');
+    div.classList.add('signal');
+    div.innerHTML = "🧠 Received Signal: " + data;
+    document.getElementById("signals").prepend(div);
+  });
+</script>
+</body>
+</html>
