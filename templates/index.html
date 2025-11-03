@@ -15,7 +15,6 @@ body {
   color:#0ff;
 }
 
-/* Starfield canvas */
 #stars {
   position:fixed;
   top:0;
@@ -25,7 +24,6 @@ body {
   z-index:-2;
 }
 
-/* Nebula background overlay */
 #nebula {
   position:fixed;
   top:0;
@@ -36,14 +34,12 @@ body {
   z-index:-1;
 }
 
-/* Hub container */
 #hub{
   width:100%;
   height:70vh;
   position:relative;
 }
 
-/* Nodes as orbiting planets */
 .node{
   width:120px;
   height:120px;
@@ -70,7 +66,6 @@ body {
   font-size:1em;
 }
 
-/* Holographic signal panel */
 #signal-box{
   width:70%;
   margin:20px auto;
@@ -101,7 +96,6 @@ button{
   transition:0.3s;
 }
 button:hover{
-  background:#0ff;
   transform:scale(1.05);
 }
 .signal{
@@ -115,7 +109,6 @@ button:hover{
   to{opacity:1; transform:translateY(0);}
 }
 
-/* Pulse comet */
 .pulse{
   position:absolute;
   border-radius:50%;
@@ -123,7 +116,6 @@ button:hover{
   box-shadow:0 0 20px #0ff,0 0 40px #0ff inset;
 }
 
-/* Neural ripple */
 .wave{
   position:absolute;
   border:2px solid #0ff;
@@ -139,8 +131,8 @@ button:hover{
 </style>
 </head>
 <body>
-
 <canvas id="stars"></canvas>
+<div id="nebula"></div>
 
 <h1 style="text-align:center;margin-top:20px;">🌌 NeuraCast Galaxy Edition 🌌</h1>
 
@@ -159,63 +151,61 @@ button:hover{
 <script>
 var socket = io();
 const hub = document.getElementById('hub');
-const nodes = {
-  systemA:{angle:0,radius:0},
-  systemB:{angle:0,radius:0},
-  systemC:{angle:0,radius:0}
-};
+const nodes = {systemA:{angle:0,radius:0}, systemB:{angle:0,radius:0}, systemC:{angle:0,radius:0}};
 
-// Initial positions (orbiting style)
+// Node orbit positions
 const centerX = window.innerWidth/2;
 const centerY = hub.offsetHeight/2;
 const orbitRadius = 200;
 
-// Place nodes in orbit
 function positionNodes(){
   let idx=0;
   for(let id in nodes){
-    let angle = idx * 2*Math.PI/3; // 3 nodes spread
+    let angle = idx * 2*Math.PI/3;
     nodes[id].angle = angle;
     let node = document.getElementById(id);
     let x = centerX + orbitRadius*Math.cos(angle) - node.offsetWidth/2;
     let y = centerY + orbitRadius*Math.sin(angle) - node.offsetHeight/2;
-    node.style.left = x + 'px';
-    node.style.top = y + 'px';
+    node.style.left = x+'px';
+    node.style.top = y+'px';
     idx++;
   }
 }
 window.addEventListener('resize',positionNodes);
 positionNodes();
 
-// Animate pulses with trail
+// SEND SIGNAL
 function sendSignal(){
   const val=document.getElementById('signal-input').value.trim();
   if(val==='')return;
-  animatePulse('systemA','systemB',val,'#0ff');
+  animatePulse('systemA','systemB',val,'#0ff',true);
   document.getElementById('signal-input').value='';
 }
 
-function animatePulse(fromId,toId,data,color){
+// PULSE ANIMATION
+function animatePulse(fromId,toId,data,color,emitSignal=true){
   const fromNode=document.getElementById(fromId);
   const toNode=document.getElementById(toId);
-
   const startX=fromNode.offsetLeft+fromNode.offsetWidth/2;
   const startY=fromNode.offsetTop+fromNode.offsetHeight/2;
   const endX=toNode.offsetLeft+toNode.offsetWidth/2;
   const endY=toNode.offsetTop+toNode.offsetHeight/2;
 
-  let progress=0,steps=250;
+  let progress=0, steps=300;
   const trailDivs=[];
   const interval=setInterval(()=>{
     progress++;
-    const x=startX+(endX-startX)*(progress/steps);
+    const curve = Math.sin(progress/steps*Math.PI)*50;
+    const x=startX+(endX-startX)*(progress/steps)+curve;
     const y=startY+(endY-startY)*(progress/steps);
 
     const trail=document.createElement('div');
     trail.classList.add('pulse');
-    trail.style.width='12px'; trail.style.height='12px';
+    trail.style.width='14px';
+    trail.style.height='14px';
     trail.style.background=color;
-    trail.style.left=x+'px'; trail.style.top=y+'px';
+    trail.style.left=x+'px';
+    trail.style.top=y+'px';
     trail.style.opacity=1-(progress/steps);
     hub.appendChild(trail);
     trailDivs.push(trail);
@@ -223,14 +213,14 @@ function animatePulse(fromId,toId,data,color){
     if(progress>=steps){
       clearInterval(interval);
       trailDivs.forEach(t=>hub.removeChild(t));
-      socket.emit('send_signal',data);
       showWaveEffect(toId);
-      autoAIResponse(toId,data);
+      if(emitSignal) socket.emit('send_signal', data);
+      if(toId==='systemC') autoAIResponse(toId,data);
     }
-  },20);
+  },25);
 }
 
-// Ripple
+// NEURAL RIPPLE
 function showWaveEffect(nodeId){
   const node=document.getElementById(nodeId);
   const wave=document.createElement('div');
@@ -243,33 +233,35 @@ function showWaveEffect(nodeId){
   setTimeout(()=>document.body.removeChild(wave),800);
 }
 
-// Receive & log signals
-socket.on('broadcast_signal',function(data){
+// SOCKETIO BROADCAST
+socket.on('broadcast_signal', function(data){
   const div=document.createElement('div');
   div.classList.add('signal');
   div.innerHTML='🧠→🤖 Neural Transmission: <b>'+data+'</b>';
   document.getElementById('signals').prepend(div);
+  animatePulse('systemA','systemB', data,'#0ff',false);
 });
 
-// AI Node auto-reply
+// AI NODE RESPONSE
 function autoAIResponse(nodeId,data){
   if(nodeId!=='systemC')return;
   setTimeout(()=>{
     const reply='🤖 AI processed: '+data.toUpperCase();
-    animatePulse('systemC','systemA',reply,'#ff0');
+    animatePulse('systemC','systemA',reply,'#ff0',false);
     const div=document.createElement('div');
     div.classList.add('signal');
     div.innerHTML='💡→🧠 '+reply;
     document.getElementById('signals').prepend(div);
-  },1000);
+  },1200);
 }
 
-/* Starfield canvas effect */
+// STARFIELD
 const canvas=document.getElementById('stars');
 const ctx=canvas.getContext('2d');
-canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
 const stars=[];
-for(let i=0;i<200;i++){
+for(let i=0;i<250;i++){
   stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.5,dx:(Math.random()-0.5)*0.2,dy:(Math.random()-0.5)*0.2});
 }
 function animateStars(){
@@ -285,7 +277,6 @@ function animateStars(){
 }
 animateStars();
 </script>
-
 </body>
 </html>
 

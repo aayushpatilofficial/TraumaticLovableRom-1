@@ -9,11 +9,9 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 def index():
     return render_template('index.html')
 
-# Receive signal from client
 @socketio.on('send_signal')
 def handle_signal(data):
     print(f"Signal received: {data}")
-    # Broadcast to all clients (simulate brain network)
     emit('broadcast_signal', data, broadcast=True)
 
 if __name__ == '__main__':
