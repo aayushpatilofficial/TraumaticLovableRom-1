@@ -1,13 +1,13 @@
 from flask import Flask, render_template, jsonify
 from openai import OpenAI
+import os
 
 app = Flask(__name__)
 
-# Two AI clients (you’ll paste 2 API keys)
-AI_A_CLIENT = OpenAI(api_key="YOUR_FIRST_OPENAI_KEY")
-AI_B_CLIENT = OpenAI(api_key="YOUR_SECOND_OPENAI_KEY")
+# Load keys securely from Replit Secrets
+AI_A_CLIENT = OpenAI(api_key=os.getenv("AI_A_KEY"))
+AI_B_CLIENT = OpenAI(api_key=os.getenv("AI_B_KEY"))
 
-# Initial conversation
 conversation = [
     {"role": "system", "content": "You are AI-A, curious and thoughtful."},
     {"role": "assistant", "content": "A: Hello, who are you?"}
@@ -20,24 +20,25 @@ def home():
 @app.route('/chat')
 def chat():
     global conversation
+    try:
+        b_response = AI_B_CLIENT.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=conversation + [{"role": "user", "content": "Respond as AI-B in one line."}]
+        )
+        b_text = b_response.choices[0].message.content.strip()
+        conversation.append({"role": "assistant", "content": f"B: {b_text}"})
 
-    # AI-B replies
-    b_response = AI_B_CLIENT.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=conversation + [{"role": "user", "content": "Respond as AI-B in one line."}]
-    )
-    b_text = b_response.choices[0].message.content.strip()
-    conversation.append({"role": "assistant", "content": f"B: {b_text}"})
+        a_response = AI_A_CLIENT.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=conversation + [{"role": "user", "content": "Respond as AI-A in one line."}]
+        )
+        a_text = a_response.choices[0].message.content.strip()
+        conversation.append({"role": "assistant", "content": f"A: {a_text}"})
 
-    # AI-A replies
-    a_response = AI_A_CLIENT.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=conversation + [{"role": "user", "content": "Respond as AI-A in one line."}]
-    )
-    a_text = a_response.choices[0].message.content.strip()
-    conversation.append({"role": "assistant", "content": f"A: {a_text}"})
+        return jsonify(conversation[-6:])
 
-    return jsonify(conversation[-6:])
+    except Exception as e:
+        return jsonify({"error": str(e)})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=8080)
