@@ -24,15 +24,15 @@ externalPort = 8008
 
 [[ports]]
 localPort = 5000
-externalPort = 5000
-
-[[ports]]
-localPort = 8080
 externalPort = 80
 
 [[ports]]
 localPort = 33465
 externalPort = 3001
+
+[[ports]]
+localPort = 38609
+externalPort = 3000
 
 [workflows]
 runButton = "Project"
@@ -50,10 +50,10 @@ args = "Flask App"
 name = "Flask App"
 author = "agent"
 
+[workflows.workflow.metadata]
+outputType = "webview"
+
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python main.py"
 waitForPort = 5000
-
-[workflows.workflow.metadata]
-outputType = "webview"
