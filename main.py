@@ -1,40 +1,39 @@
-from flask import Flask, render_template, request, redirect
-import webbrowser
+from flask import Flask, render_template, request
+from flask_socketio import SocketIO
 import subprocess
-import sys
+import webbrowser
 import os
+import sys
 
 app = Flask(__name__)
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")
 
-# Allowed commands for safety
-ALLOWED_COMMANDS = {
-    "open": lambda arg: webbrowser.open(arg),
-    "ls": lambda arg="": subprocess.getoutput(f"ls {arg}"),
-    "pwd": lambda arg="": subprocess.getoutput("pwd"),
-}
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-@app.route("/", methods=["GET"])
-def home():
-    return render_template("index.html")
+@socketio.on('execute_command')
+def handle_command(data):
+    cmd = data.get('command')
+    result = ""
 
-@app.route("/execute", methods=["POST"])
-def execute():
-    command_text = request.form.get("command")
-    if not command_text:
-        return render_template("index.html", result="No command entered!")
+    try:
+        # Open websites
+        if cmd.startswith("open "):
+            url = cmd[5:]
+            if not url.startswith("http"):
+                url = "https://" + url
+            webbrowser.open(url)
+            result = f"Opened {url}"
+        else:
+            # Execute system command
+            completed = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+            result = completed.stdout if completed.stdout else completed.stderr
+    except Exception as e:
+        result = str(e)
 
-    parts = command_text.strip().split(maxsplit=1)
-    cmd = parts[0].lower()
-    arg = parts[1] if len(parts) > 1 else ""
+    # Send result back to client
+    socketio.emit('command_result', {'result': result})
 
-    if cmd in ALLOWED_COMMANDS:
-        try:
-            result = ALLOWED_COMMANDS[cmd](arg)
-            return render_template("index.html", result=result or "Command executed successfully!")
-        except Exception as e:
-            return render_template("index.html", result=f"Error: {e}")
-    else:
-        return render_template("index.html", result=f"Command '{cmd}' not allowed!")
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
+if __name__ == '__main__':
+    socketio.run(app, host='0.0.0.0', port=5000)
