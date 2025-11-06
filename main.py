@@ -5,7 +5,18 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key')
-socketio = SocketIO(app, cors_allowed_origins="*", ping_timeout=60, ping_interval=25)
+
+# Configure SocketIO for Render
+socketio = SocketIO(
+    app,
+    cors_allowed_origins="*",
+    ping_timeout=60,
+    ping_interval=25,
+    logger=True,
+    engineio_logger=True,
+    async_mode='threading',
+    manage_acks=False
+)
 
 # Store connected clients
 connected_clients = {}
@@ -25,20 +36,24 @@ def handle_connect():
         'connected_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         'ip': request.remote_addr
     }
-    print(f"Client connected: {client_id}")
+    print(f"✓ Client connected: {client_id} | Total: {len(connected_clients)}")
+
+    # Send to connecting client
     emit('connection_response', {
         'data': 'Connected to server',
         'client_count': len(connected_clients)
     })
-    socketio.emit('client_count', {'count': len(connected_clients)})
+
+    # Broadcast updated client count to ALL
+    socketio.emit('client_count', {'count': len(connected_clients)}, broadcast=True)
 
 @socketio.on('disconnect')
 def handle_disconnect():
     client_id = request.sid
     if client_id in connected_clients:
         del connected_clients[client_id]
-    print(f"Client disconnected: {client_id}")
-    socketio.emit('client_count', {'count': len(connected_clients)})
+    print(f"✗ Client disconnected: {client_id} | Remaining: {len(connected_clients)}")
+    socketio.emit('client_count', {'count': len(connected_clients)}, broadcast=True)
 
 @socketio.on('send_command')
 def handle_command(data):
@@ -51,19 +66,32 @@ def handle_command(data):
 
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-    print(f"Command from {sender_id}: {command}")
+    print(f"📤 Command from {sender_id}: {command}")
 
+    # Emit back to sender for logging
     emit('command_sent', {
         'command': command,
         'timestamp': timestamp
     })
 
-    socketio.emit('command_received', {
+    # Broadcast to all OTHER clients
+    emit('command_received', {
         'command': command,
         'timestamp': timestamp,
         'sender': sender_id[:8]
-    }, skip_sid=sender_id)
+    }, broadcast=True, include_self=False)
+
+@socketio.on_error_default
+def default_error_handler(e):
+    print(f"❌ Error: {str(e)}")
+    return False
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    socketio.run(app, host='0.0.0.0', port=port, debug=False)
+    socketio.run(
+        app,
+        host='0.0.0.0',
+        port=port,
+        debug=False,
+        allow_unsafe_werkzeug=True
+    )

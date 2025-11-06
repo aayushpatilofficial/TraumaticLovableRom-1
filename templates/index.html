@@ -257,7 +257,15 @@
     </div>
 
     <script>
-        const socket = io();
+        const socket = io({
+            reconnection: true,
+            reconnectionDelay: 1000,
+            reconnectionDelayMax: 5000,
+            reconnectionAttempts: Infinity,
+            transports: ['websocket', 'polling'],
+            upgrade: true
+        });
+
         const commandInput = document.getElementById('commandInput');
         const logContainer = document.getElementById('logContainer');
         const statusDot = document.getElementById('statusDot');
@@ -265,9 +273,11 @@
         const clientCount = document.getElementById('clientCount');
 
         let logs = [];
+        let reconnectAttempts = 0;
 
         // Connection events
         socket.on('connect', () => {
+            reconnectAttempts = 0;
             statusDot.classList.add('connected');
             connectionStatus.textContent = 'Connected';
             addLog('System', 'Connected to server', 'system');
@@ -276,11 +286,17 @@
         socket.on('disconnect', () => {
             statusDot.classList.remove('connected');
             connectionStatus.textContent = 'Disconnected';
-            addLog('System', 'Disconnected from server', 'system');
+            addLog('System', 'Disconnected - Attempting to reconnect...', 'system');
         });
 
-        socket.on('connection_response', (data) => {
-            addLog('System', data.data, 'system');
+        socket.on('connect_error', (error) => {
+            console.error('Connection error:', error);
+            addLog('Error', `Connection error: ${error}`, 'error');
+        });
+
+        socket.on('reconnect_attempt', () => {
+            reconnectAttempts++;
+            addLog('System', `Reconnecting... (Attempt ${reconnectAttempts})`, 'system');
         });
 
         socket.on('client_count', (data) => {
