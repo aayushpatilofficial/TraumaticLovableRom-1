@@ -2066,21 +2066,23 @@
         }
 
         function executeCommand(command) {
-            // Simulate execution on all connected browsers
+            // Simulate execution on all connected browsers with proper log updates
             for (let i = 0; i < appState.clientCount; i++) {
                 setTimeout(() => {
-                    addLog('received', `Browser ${i + 1}: Executing "${command}"`);
-                }, i * 100);
-            }
-
-            // Execute on current browser
-            if (command.startsWith('open')) {
-                const url = command.replace('open ', '').trim();
-                window.open(url, '_blank');
-            } else if (command.startsWith('search')) {
-                const query = command.replace('search ', '').trim();
-                const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-                window.open(searchUrl, '_blank');
+                    const browserNum = i + 1;
+                    if (command.startsWith('open')) {
+                        const url = command.replace('open ', '').trim();
+                        addLog('received', `Browser ${browserNum} opened: ${url}`);
+                        if (i === 0) window.open(url, '_blank'); // Open in current browser only
+                    } else if (command.startsWith('search')) {
+                        const query = command.replace('search ', '').trim();
+                        addLog('received', `Browser ${browserNum} searched: "${query}"`);
+                        if (i === 0) {
+                            const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+                            window.open(searchUrl, '_blank');
+                        }
+                    }
+                }, i * 200);
             }
         }
 
