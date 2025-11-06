@@ -36,11 +36,12 @@ def on_connect():
     # Notify this client
     emit('connection_response', {
         'message': 'Connected to server',
-        'client_id': client_id
+        'client_id': client_id,
+        'total_clients': len(connected_clients)
     })
 
-    # Broadcast to everyone
-    socketio.emit('client_count', {'count': len(connected_clients)})
+    # Broadcast to EVERYONE including new client
+    socketio.emit('client_count', {'count': len(connected_clients)}, broadcast=True)
 
 @socketio.on('disconnect')
 def on_disconnect():
@@ -60,18 +61,19 @@ def on_send_command(data):
     timestamp = datetime.now().strftime('%H:%M:%S')
 
     if not command:
+        print('Empty command received')
         return
 
-    print(f'Command received: {command}')
+    print(f'Command received from {sender_id}: {command}')
 
-    # Send back to sender
+    # Send confirmation back to sender
     emit('command_sent', {
         'command': command,
         'timestamp': timestamp
-    })
+    }, to=sender_id)
 
-    # Send to others
-    emit('command_received', {
+    # Send command to all OTHER clients
+    socketio.emit('command_received', {
         'command': command,
         'timestamp': timestamp,
         'sender': sender_id[:6]

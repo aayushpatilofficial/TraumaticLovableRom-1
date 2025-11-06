@@ -309,6 +309,7 @@
         });
 
         socket.on('client_count', (data) => {
+            console.log('Client count updated:', data.count);
             clientCount.textContent = data.count;
         });
 
@@ -318,6 +319,7 @@
         });
 
         socket.on('command_received', (data) => {
+            console.log('Command received event:', data);
             addLog('Received', data.command, 'received', data.timestamp);
             executeCommand(data.command);
         });
@@ -330,9 +332,12 @@
         function sendCommand() {
             const command = commandInput.value.trim();
             if (command) {
+                console.log('Sending command:', command);
                 socket.emit('send_command', { command });
                 commandInput.value = '';
                 commandInput.focus();
+            } else {
+                console.log('Command is empty');
             }
         }
 
