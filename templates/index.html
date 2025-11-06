@@ -257,14 +257,17 @@
     </div>
 
     <script>
+        console.log('Initializing Socket.IO connection...');
+
         const socket = io({
             reconnection: true,
             reconnectionDelay: 1000,
             reconnectionDelayMax: 5000,
             reconnectionAttempts: Infinity,
-            transports: ['websocket', 'polling'],
-            upgrade: true
+            transports: ['websocket', 'polling']
         });
+
+        console.log('Socket.IO initialized');
 
         const commandInput = document.getElementById('commandInput');
         const logContainer = document.getElementById('logContainer');
@@ -291,12 +294,18 @@
 
         socket.on('connect_error', (error) => {
             console.error('Connection error:', error);
-            addLog('Error', `Connection error: ${error}`, 'error');
+            addLog('Error', `Connection error: ${error.message || error}`, 'error');
         });
 
         socket.on('reconnect_attempt', () => {
             reconnectAttempts++;
+            console.log(`Reconnecting... Attempt ${reconnectAttempts}`);
             addLog('System', `Reconnecting... (Attempt ${reconnectAttempts})`, 'system');
+        });
+
+        socket.on('error', (error) => {
+            console.error('Socket error:', error);
+            addLog('Error', `Server error: ${error}`, 'error');
         });
 
         socket.on('client_count', (data) => {
