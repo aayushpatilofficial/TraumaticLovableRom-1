@@ -1,69 +1,9 @@
-</div>
-
-                <!-- Command History & Favorites -->
-                <div class="section">
-                    <div class="section-header">
-                        <div>
-                            <div class="section-title">⏱️ Recent Commands & Favorites</div>
-                        </div>
-                    </div>
-                    <div class="tabs">
-                        <button class="tab active" onclick="switchTab('recent')">Recent</button>
-                        <button class="tab" onclick="switchTab('favorites')">⭐ Favorites</button>
-                    </div>
-                    <div id="recent-tab" class="tab-content">
-                        <div id="recentCommands"></div>
-                    </div>
-                    <div id="favorites-tab" class="tab-content" style="display:none;">
-                        <div id="favoriteCommands"></div>
-                    </div>
-                </div>
-
-                <!-- Quick Stats -->
-                <div class="section">
-                    <div class="section-title">📊 Quick Stats</div>
-                    <div class="stats-mini">
-                        <div class="stat-mini">
-                            <div class="stat-mini-label">Today's Commands</div>
-                            <div class="stat-mini-value" id="todayCommands">0</div>
-                        </div>
-                        <div class="stat-mini">
-                            <div class="stat-mini-label">Avg Response</div>
-                            <div class="stat-mini-value" id="avgResponseMini">0ms</div>
-                        </div>
-                        <div class="stat-mini">
-                            <div class="stat-mini-label">Session Active</div>
-                            <div class="stat-mini-value" id="sessionActive">Yes</div>
-                        </div>
-                        <div class="stat-mini">
-                            <div class="stat-mini-label">Commands/Hour</div>
-                            <div class="stat-mini-value" id="cmdPerHour">0</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="stats-grid">                    <div style="margin-bottom: 24px;">
-                        <div class="input-label">Popular Commands</div>
-                        <div class="quick-commands">
-                            <button class="quick-btn" onclick="quickCommand('open https://github.com')" title="Quick access to GitHub">📌 GitHub</button>
-                            <button class="quick-btn" onclick="quickCommand('open https://google.com')" title="Open Google">🔍 Google</button>
-                            <button class="quick-btn" onclick="quickCommand('search python programming')" title="Search Python tutorials">🐍 Python</button>
-                            <button class="quick-btn" onclick="quickCommand('open https://youtube.com')" title="Open YouTube">🎥 YouTube</button>
-                            <button class="quick-btn" onclick="quickCommand('search web development')" title="Search web dev resources">💻 Web Dev</button>
-                            <button class="quick-btn" onclick="quickCommand('open https://stackoverflow.com')" title="Open Stack Overflow">📚 Stack Overflow</button>
-                            <button class="quick-btn" onclick="quickCommand('search artificial intelligence')" title="Search AI resources">🤖 AI Resources</button>
-                            <button class="quick-btn" onclick="quickCommand('open https://developer.mozilla.org')" title="Open MDN Docs">📖 MDN Docs</button>
-                            <button class="quick-btn" onclick="quickCommand('search machine learning')" title="Search ML tutorials">🧠 ML Tutorials</button>
-                            <button class="quick-btn" onclick="quickCommand('search javascript es6')" title="Search JS ES6">⚡ JavaScript</button>
-                            <button class="quick-btn" onclick="quickCommand('open https://codepen.io')" title="Open CodePen">🎨 CodePen</button>
-                            <button class="quick-btn" onclick="quickCommand('search react tutorial')" title="Search React">⚛️ React</button>
-                        </div>
-                    </div><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Command Sync Pro v2.0</title>
+    <title>Neura Sync v2.0</title>
     <style>
         * {
             margin: 0;
@@ -92,7 +32,6 @@
             --gray-900: #1a1a1a;
             --border-radius: 8px;
             --transition: all 0.2s ease;
-            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
         html { scroll-behavior: smooth; }
@@ -104,12 +43,11 @@
             min-height: 100vh;
         }
 
-        /* Sidebar */
         .sidebar {
             position: fixed;
             left: 0;
             top: 0;
-            width: 280px;
+            width: 260px;
             height: 100vh;
             background: linear-gradient(180deg, #fff 0%, #f9fafb 100%);
             border-right: 1px solid var(--gray-200);
@@ -121,18 +59,19 @@
         }
 
         .sidebar-header {
-            padding: 28px 24px;
+            padding: 20px 16px;
             border-bottom: 1px solid var(--gray-200);
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 10px;
             font-weight: 700;
-            font-size: 20px;
+            font-size: 16px;
             background: linear-gradient(135deg, var(--primary-light) 0%, #ede9fe 100%);
+            flex-shrink: 0;
         }
 
         .sidebar-logo {
-            font-size: 28px;
+            font-size: 24px;
             animation: bounce 2s infinite;
         }
 
@@ -143,75 +82,75 @@
 
         .sidebar-nav {
             flex: 1;
-            padding: 20px 0;
+            padding: 16px 0;
             overflow-y: auto;
         }
 
         .nav-section {
-            padding: 20px 0;
+            padding: 16px 0;
             border-bottom: 1px solid var(--gray-100);
         }
 
         .nav-section-title {
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 1px;
             color: var(--gray-400);
-            padding: 0 24px 16px;
+            padding: 0 16px 12px;
         }
 
         .nav-item {
-            padding: 14px 24px;
+            padding: 10px 16px;
             color: var(--gray-600);
             cursor: pointer;
             transition: var(--transition);
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 14px;
+            gap: 10px;
+            font-size: 13px;
             font-weight: 500;
         }
 
         .nav-item:hover {
             background: var(--gray-100);
             color: var(--primary);
-            padding-left: 28px;
         }
 
         .nav-item.active {
             background: var(--primary-light);
             color: var(--primary);
             border-left: 4px solid var(--primary);
-            padding-left: 20px;
+            padding-left: 12px;
             font-weight: 700;
         }
 
         .nav-icon {
-            font-size: 18px;
-            min-width: 20px;
+            font-size: 16px;
+            min-width: 18px;
         }
 
         .sidebar-footer {
-            padding: 20px 24px;
+            padding: 16px;
             border-top: 1px solid var(--gray-200);
-            font-size: 12px;
+            font-size: 11px;
             color: var(--gray-400);
+            flex-shrink: 0;
         }
 
         .sidebar-user {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 12px;
+            gap: 10px;
+            padding: 8px;
             background: var(--gray-100);
             border-radius: var(--border-radius);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .sidebar-avatar {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border-radius: 50%;
             display: flex;
@@ -219,29 +158,29 @@
             justify-content: center;
             color: white;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 12px;
+            flex-shrink: 0;
         }
 
-        /* Main Content */
         .main-content {
-            margin-left: 280px;
+            margin-left: 260px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
-        /* Navbar */
         .navbar {
             background: linear-gradient(90deg, #fff 0%, #f9fafb 100%);
             border-bottom: 1px solid var(--gray-200);
-            padding: 0 40px;
-            height: 80px;
+            padding: 0 24px;
+            height: 70px;
             display: flex;
             align-items: center;
             position: sticky;
             top: 0;
             z-index: 100;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            flex-shrink: 0;
         }
 
         .nav-content {
@@ -249,48 +188,47 @@
             justify-content: space-between;
             align-items: center;
             width: 100%;
-            gap: 24px;
+            gap: 20px;
         }
 
         .nav-left {
-            display: flex;
-            align-items: center;
-            gap: 20px;
             flex: 1;
         }
 
         .nav-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--gray-900);
         }
 
         .nav-subtitle {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--gray-500);
-            margin-top: 4px;
+            margin-top: 2px;
         }
 
         .nav-actions {
             display: flex;
             align-items: center;
-            gap: 24px;
+            gap: 16px;
+            flex-shrink: 0;
         }
 
         .status-badge {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 10px 16px;
+            gap: 6px;
+            padding: 8px 12px;
             background: var(--gray-100);
             border-radius: 20px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
+            white-space: nowrap;
         }
 
         .status-dot {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: var(--gray-300);
             animation: pulse 2s infinite;
@@ -307,14 +245,14 @@
         }
 
         .nav-time {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--gray-500);
             font-family: monospace;
         }
 
         .user-avatar {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border-radius: 50%;
             display: flex;
@@ -322,25 +260,24 @@
             justify-content: center;
             color: white;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 14px;
             cursor: pointer;
+            flex-shrink: 0;
         }
 
-        /* Container */
         .container {
             flex: 1;
-            padding: 40px;
+            padding: 28px;
             overflow-y: auto;
         }
 
-        /* Page Header */
         .page-header {
-            margin-bottom: 40px;
+            margin-bottom: 28px;
         }
 
         .page-header h1 {
-            font-size: 40px;
-            margin-bottom: 12px;
+            font-size: 32px;
+            margin-bottom: 8px;
             font-weight: 800;
             background: linear-gradient(135deg, var(--gray-900) 0%, var(--primary) 100%);
             -webkit-background-clip: text;
@@ -348,26 +285,25 @@
         }
 
         .page-header p {
-            font-size: 16px;
+            font-size: 14px;
             color: var(--gray-600);
         }
 
-        /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 24px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
         }
 
         .stat-card {
             background: linear-gradient(135deg, #fff 0%, #f9fafb 100%);
             border: 1px solid var(--gray-200);
             border-radius: var(--border-radius);
-            padding: 28px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 10px;
             cursor: pointer;
             transition: var(--transition);
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -376,39 +312,38 @@
         .stat-card:hover {
             border-color: var(--primary);
             box-shadow: 0 12px 24px rgba(59, 130, 246, 0.15);
-            transform: translateY(-8px);
+            transform: translateY(-6px);
         }
 
         .stat-icon {
-            font-size: 32px;
+            font-size: 28px;
         }
 
         .stat-label {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
             color: var(--gray-500);
         }
 
         .stat-value {
-            font-size: 44px;
+            font-size: 32px;
             font-weight: 800;
             color: var(--gray-900);
             line-height: 1;
         }
 
         .stat-sub {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--gray-500);
         }
 
-        /* Section */
         .section {
             background: linear-gradient(135deg, #fff 0%, #f9fafb 100%);
             border: 1px solid var(--gray-200);
             border-radius: var(--border-radius);
-            padding: 36px;
-            margin-bottom: 28px;
+            padding: 24px;
+            margin-bottom: 20px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
@@ -416,82 +351,95 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 28px;
-            padding-bottom: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
             border-bottom: 2px solid var(--gray-100);
         }
 
         .section-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--gray-900);
         }
 
         .section-subtitle {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--gray-500);
-            margin-top: 6px;
+            margin-top: 4px;
         }
 
-        /* Input Styles */
         .input-group {
             display: flex;
-            gap: 14px;
-            margin-bottom: 24px;
+            gap: 12px;
+            margin-bottom: 18px;
             align-items: flex-end;
+            flex-wrap: wrap;
         }
 
         .input-wrapper {
             flex: 1;
+            min-width: 200px;
         }
 
         .input-label {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             color: var(--gray-700);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             display: block;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
 
-        #commandInput {
+        input[type="text"],
+        input[type="time"],
+        select,
+        textarea {
             width: 100%;
-            padding: 16px 18px;
+            padding: 12px 14px;
             border: 1px solid var(--gray-200);
             border-radius: var(--border-radius);
-            font-size: 14px;
+            font-size: 13px;
             transition: var(--transition);
             background: white;
         }
 
-        #commandInput:focus {
+        input[type="text"]:focus,
+        input[type="time"]:focus,
+        select:focus,
+        textarea:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
-        /* Buttons */
         .btn {
-            padding: 14px 32px;
+            padding: 10px 24px;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
             border-radius: var(--border-radius);
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
             cursor: pointer;
             transition: var(--transition);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
             box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            white-space: nowrap;
         }
 
         .btn:hover {
-            transform: translateY(-3px);
+            transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .btn-secondary {
@@ -500,7 +448,7 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
-        .btn-secondary:hover {
+        .btn-secondary:hover:not(:disabled) {
             background: var(--gray-300);
         }
 
@@ -509,24 +457,23 @@
         }
 
         .btn-sm {
-            padding: 10px 18px;
-            font-size: 12px;
+            padding: 8px 14px;
+            font-size: 11px;
         }
 
-        /* Quick Commands */
         .quick-commands {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 14px;
-            margin-bottom: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin-bottom: 16px;
         }
 
         .quick-btn {
-            padding: 14px 16px;
+            padding: 10px 12px;
             background: linear-gradient(135deg, var(--gray-100), var(--gray-50));
             border: 1px solid var(--gray-200);
             border-radius: var(--border-radius);
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             color: var(--gray-700);
             cursor: pointer;
@@ -540,40 +487,40 @@
             transform: translateY(-2px);
         }
 
-        /* Alert */
         .alert {
-            padding: 16px 20px;
+            padding: 14px 16px;
             border-radius: var(--border-radius);
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             display: flex;
-            gap: 14px;
+            gap: 12px;
             align-items: flex-start;
             border-left: 4px solid;
         }
 
         .alert-icon {
-            font-size: 18px;
+            font-size: 16px;
+            flex-shrink: 0;
         }
 
         .alert-info {
             background: linear-gradient(135deg, #f0f9ff, #f0f9ff);
             border-left-color: var(--info);
             color: #0c2d6b;
+            font-size: 13px;
         }
 
-        /* Cards Grid */
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin-top: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
         }
 
         .info-card {
             background: linear-gradient(135deg, var(--primary-light), #ede9fe);
             border: 1px solid #bfdbfe;
             border-radius: var(--border-radius);
-            padding: 24px;
+            padding: 18px;
             color: #0c2d6b;
             transition: var(--transition);
             cursor: pointer;
@@ -581,47 +528,47 @@
         }
 
         .info-card:hover {
-            transform: translateY(-6px);
+            transform: translateY(-4px);
             box-shadow: 0 12px 24px rgba(59, 130, 246, 0.2);
         }
 
         .info-card h3 {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .info-card p {
-            font-size: 13px;
-            line-height: 1.6;
+            font-size: 12px;
+            line-height: 1.5;
         }
 
         .info-card code {
             background: white;
-            padding: 3px 8px;
+            padding: 2px 6px;
             border-radius: 4px;
-            font-size: 12px;
+            font-size: 11px;
             color: var(--primary);
             border: 1px solid var(--gray-200);
         }
 
-        /* Log Container */
         .log-container {
             background: linear-gradient(135deg, var(--gray-50), var(--gray-100));
             border: 1px solid var(--gray-200);
             border-radius: var(--border-radius);
-            height: 500px;
+            max-height: 400px;
             overflow-y: auto;
             padding: 0;
         }
 
         .log-entry {
-            padding: 16px 18px;
+            padding: 12px 14px;
             border-bottom: 1px solid var(--gray-200);
-            font-size: 13px;
+            font-size: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 12px;
             transition: var(--transition);
         }
 
@@ -631,20 +578,22 @@
 
         .log-time {
             color: var(--gray-500);
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             font-family: monospace;
-            min-width: 80px;
+            min-width: 70px;
+            flex-shrink: 0;
         }
 
         .log-badge {
             font-weight: 700;
-            font-size: 10px;
+            font-size: 9px;
             text-transform: uppercase;
-            padding: 6px 12px;
-            border-radius: 6px;
-            min-width: 80px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            min-width: 70px;
             text-align: center;
+            flex-shrink: 0;
         }
 
         .log-badge.sent {
@@ -661,23 +610,23 @@
             flex: 1;
             color: var(--gray-700);
             font-weight: 500;
-            margin: 0 16px;
+            word-break: break-all;
+            font-size: 12px;
         }
 
         .empty-state {
-            padding: 100px 40px;
+            padding: 60px 20px;
             text-align: center;
             color: var(--gray-400);
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .empty-icon {
-            font-size: 56px;
-            margin-bottom: 16px;
+            font-size: 48px;
+            margin-bottom: 12px;
             opacity: 0.6;
         }
 
-        /* Page Content */
         .page-content {
             display: none;
         }
@@ -686,15 +635,14 @@
             display: block;
         }
 
-        /* Hint Box */
         .hint-box {
             background: linear-gradient(135deg, var(--gray-50), var(--gray-100));
             border: 1px solid var(--gray-200);
             border-radius: var(--border-radius);
-            padding: 20px;
-            font-size: 13px;
+            padding: 16px;
+            font-size: 12px;
             color: var(--gray-700);
-            line-height: 1.8;
+            line-height: 1.6;
         }
 
         .hint-box strong {
@@ -703,71 +651,33 @@
 
         .hint-list {
             list-style: none;
-            margin-top: 12px;
+            margin-top: 10px;
         }
 
         .hint-list li {
-            padding: 8px 0;
+            padding: 6px 0;
             display: flex;
             gap: 8px;
+            font-size: 12px;
         }
 
         .hint-list li:before {
             content: "→";
             color: var(--primary);
             font-weight: 700;
-            min-width: 16px;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 240px;
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-                z-index: 1001;
-            }
-
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-left: 0;
-            }
-
-            .container {
-                padding: 24px 20px;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .page-header h1 {
-                font-size: 28px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stat-value {
-                font-size: 36px;
-            }
+            min-width: 14px;
+            flex-shrink: 0;
         }
 
         .badge {
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            padding: 6px 12px;
+            padding: 5px 10px;
             background: var(--primary-light);
             color: var(--primary);
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
         }
@@ -779,11 +689,11 @@
 
         .progress-bar {
             width: 100%;
-            height: 8px;
+            height: 6px;
             background: var(--gray-200);
             border-radius: 4px;
             overflow: hidden;
-            margin-top: 12px;
+            margin-top: 10px;
         }
 
         .progress-fill {
@@ -795,15 +705,16 @@
         .stats-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 24px;
+            margin-top: 16px;
             background: white;
+            font-size: 12px;
         }
 
         .stats-table th {
             background: linear-gradient(135deg, var(--gray-100), var(--gray-50));
-            padding: 16px;
+            padding: 12px;
             text-align: left;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             color: var(--gray-700);
             text-transform: uppercase;
@@ -811,9 +722,9 @@
         }
 
         .stats-table td {
-            padding: 16px;
+            padding: 12px;
             border-bottom: 1px solid var(--gray-200);
-            font-size: 13px;
+            font-size: 12px;
             color: var(--gray-700);
         }
 
@@ -821,31 +732,34 @@
             background: var(--gray-50);
         }
 
-        /* New Styles */
         .command-history-item {
             background: white;
-            padding: 12px 16px;
+            padding: 10px 12px;
             border-radius: 6px;
-            border-left: 4px solid var(--primary);
-            margin-bottom: 8px;
+            border-left: 3px solid var(--primary);
+            margin-bottom: 6px;
             cursor: pointer;
             transition: var(--transition);
-            font-size: 13px;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .command-history-item:hover {
             background: var(--gray-50);
-            transform: translateX(4px);
+            transform: translateX(3px);
             box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
         }
 
         .favorite-btn {
             background: none;
             border: none;
-            font-size: 18px;
+            font-size: 14px;
             cursor: pointer;
-            margin-left: 8px;
+            margin-left: 6px;
             transition: var(--transition);
+            padding: 0 4px;
         }
 
         .favorite-btn.active {
@@ -854,40 +768,40 @@
 
         .stats-mini {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 12px;
-            margin: 16px 0;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+            margin: 12px 0;
         }
 
         .stat-mini {
             background: linear-gradient(135deg, var(--primary-light), #ede9fe);
-            padding: 12px;
+            padding: 10px;
             border-radius: 6px;
             text-align: center;
-            font-size: 12px;
+            font-size: 11px;
         }
 
         .stat-mini-value {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 800;
             color: var(--primary);
-            margin: 4px 0;
+            margin: 3px 0;
         }
 
         .stat-mini-label {
             color: var(--gray-600);
-            font-size: 11px;
+            font-size: 10px;
         }
 
         .tabs {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             border-bottom: 2px solid var(--gray-200);
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .tab {
-            padding: 10px 16px;
+            padding: 8px 12px;
             background: none;
             border: none;
             cursor: pointer;
@@ -895,7 +809,7 @@
             color: var(--gray-500);
             border-bottom: 3px solid transparent;
             transition: var(--transition);
-            font-size: 13px;
+            font-size: 12px;
         }
 
         .tab.active {
@@ -910,9 +824,9 @@
         .copy-btn {
             background: var(--gray-100);
             border: 1px solid var(--gray-200);
-            padding: 6px 12px;
+            padding: 4px 10px;
             border-radius: 4px;
-            font-size: 11px;
+            font-size: 10px;
             cursor: pointer;
             transition: var(--transition);
         }
@@ -923,14 +837,586 @@
             border-color: var(--primary);
         }
 
-        .timer {
-            display: inline-block;
-            background: var(--warning);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 260px;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                z-index: 1001;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .container {
+                padding: 16px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .page-header h1 {
+                font-size: 24px;
+                margin-bottom: 6px;
+            }
+
+            .page-header p {
+                font-size: 12px;
+            }
+
+            .section {
+                padding: 16px;
+                margin-bottom: 16px;
+            }
+
+            .section-title {
+                font-size: 16px;
+            }
+
+            .stat-card {
+                padding: 16px;
+            }
+
+            .stat-value {
+                font-size: 24px;
+            }
+
+            .navbar {
+                padding: 0 16px;
+                height: 60px;
+            }
+
+            .nav-title {
+                font-size: 16px;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+
+            .input-wrapper {
+                width: 100%;
+                min-width: auto;
+            }
+
+            .quick-commands {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 8px;
+            }
+
+            .quick-btn {
+                padding: 8px 10px;
+                font-size: 11px;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .info-card {
+                padding: 14px;
+            }
+
+            .info-card h3 {
+                font-size: 13px;
+            }
+
+            .info-card p {
+                font-size: 11px;
+            }
+
+            .stats-table {
+                font-size: 11px;
+            }
+
+            .stats-table th,
+            .stats-table td {
+                padding: 10px 6px;
+                font-size: 11px;
+            }
+
+            .log-entry {
+                padding: 10px 8px;
+                gap: 8px;
+                font-size: 11px;
+            }
+
+            .log-time {
+                font-size: 10px;
+                min-width: 60px;
+            }
+
+            .log-badge {
+                padding: 3px 8px;
+                font-size: 8px;
+                min-width: 60px;
+            }
+
+            .log-message {
+                font-size: 11px;
+            }
+
+            .btn {
+                padding: 9px 16px;
+                font-size: 12px;
+            }
+
+            .btn-sm {
+                padding: 6px 12px;
+                font-size: 10px;
+            }
+
+            .status-badge {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+
+            .nav-time {
+                font-size: 10px;
+            }
+
+            .user-avatar {
+                width: 32px;
+                height: 32px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .sidebar {
+                width: 240px;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .container {
+                padding: 12px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .page-header {
+                margin-bottom: 16px;
+            }
+
+            .page-header h1 {
+                font-size: 20px;
+                margin-bottom: 4px;
+            }
+
+            .page-header p {
+                font-size: 11px;
+            }
+
+            .section {
+                padding: 14px;
+                margin-bottom: 12px;
+            }
+
+            .section-title {
+                font-size: 15px;
+            }
+
+            .section-subtitle {
+                font-size: 11px;
+            }
+
+            .section-header {
+                margin-bottom: 14px;
+                padding-bottom: 12px;
+            }
+
+            .stat-card {
+                padding: 14px;
+            }
+
+            .stat-icon {
+                font-size: 24px;
+            }
+
+            .stat-label {
+                font-size: 10px;
+            }
+
+            .stat-value {
+                font-size: 20px;
+            }
+
+            .stat-sub {
+                font-size: 11px;
+            }
+
+            .navbar {
+                padding: 0 12px;
+                height: 56px;
+            }
+
+            .nav-content {
+                gap: 12px;
+            }
+
+            .nav-left {
+                gap: 12px;
+            }
+
+            .nav-title {
+                font-size: 15px;
+            }
+
+            .nav-subtitle {
+                font-size: 10px;
+            }
+
+            .nav-actions {
+                gap: 8px;
+            }
+
+            .status-badge {
+                padding: 5px 8px;
+                font-size: 10px;
+            }
+
+            .status-dot {
+                width: 6px;
+                height: 6px;
+            }
+
+            .nav-time {
+                font-size: 9px;
+            }
+
+            .user-avatar {
+                width: 30px;
+                height: 30px;
+                font-size: 11px;
+            }
+
+            .input-label {
+                font-size: 10px;
+            }
+
+            input[type="text"],
+            input[type="time"],
+            select,
+            textarea {
+                padding: 10px 12px;
+                font-size: 12px;
+            }
+
+            .quick-commands {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                gap: 6px;
+            }
+
+            .quick-btn {
+                padding: 8px 8px;
+                font-size: 10px;
+            }
+
+            .btn {
+                padding: 8px 14px;
+                font-size: 11px;
+            }
+
+            .btn-sm {
+                padding: 6px 10px;
+                font-size: 9px;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .info-card {
+                padding: 12px;
+            }
+
+            .info-card h3 {
+                font-size: 12px;
+                margin-bottom: 6px;
+            }
+
+            .info-card p {
+                font-size: 10px;
+                line-height: 1.4;
+            }
+
+            .info-card code {
+                font-size: 10px;
+                padding: 1px 4px;
+            }
+
+            .hint-box {
+                padding: 12px;
+                font-size: 11px;
+            }
+
+            .hint-list li {
+                padding: 4px 0;
+                font-size: 11px;
+            }
+
+            .stats-mini {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+
+            .stat-mini {
+                padding: 8px;
+            }
+
+            .stat-mini-value {
+                font-size: 16px;
+                margin: 2px 0;
+            }
+
+            .stat-mini-label {
+                font-size: 9px;
+            }
+
+            .tabs {
+                gap: 8px;
+                margin-bottom: 12px;
+            }
+
+            .tab {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+
+            .log-container {
+                max-height: 300px;
+            }
+
+            .log-entry {
+                padding: 8px 6px;
+                gap: 6px;
+                font-size: 10px;
+            }
+
+            .log-time {
+                font-size: 9px;
+                min-width: 55px;
+            }
+
+            .log-badge {
+                padding: 2px 6px;
+                font-size: 7px;
+                min-width: 55px;
+            }
+
+            .log-message {
+                font-size: 10px;
+            }
+
+            .command-history-item {
+                padding: 8px 10px;
+                border-left: 2px solid var(--primary);
+                margin-bottom: 4px;
+                font-size: 11px;
+            }
+
+            .favorite-btn {
+                font-size: 12px;
+                margin-left: 4px;
+            }
+
+            .stats-table {
+                font-size: 10px;
+            }
+
+            .stats-table th {
+                padding: 8px 4px;
+                font-size: 9px;
+            }
+
+            .stats-table td {
+                padding: 8px 4px;
+                font-size: 10px;
+            }
+
+            .progress-bar {
+                height: 4px;
+                margin-top: 8px;
+            }
+
+            .alert {
+                padding: 10px 12px;
+                gap: 8px;
+            }
+
+            .alert-icon {
+                font-size: 14px;
+            }
+
+            .badge {
+                padding: 4px 8px;
+                font-size: 9px;
+            }
+
+            .sidebar-header {
+                padding: 14px 12px;
+            }
+
+            .sidebar-logo {
+                font-size: 20px;
+            }
+
+            .sidebar-header {
+                font-size: 14px;
+            }
+
+            .nav-section {
+                padding: 12px 0;
+            }
+
+            .nav-section-title {
+                font-size: 8px;
+                padding: 0 12px 10px;
+            }
+
+            .nav-item {
+                padding: 8px 12px;
+                font-size: 12px;
+                gap: 8px;
+            }
+
+            .nav-icon {
+                font-size: 14px;
+            }
+
+            .sidebar-footer {
+                padding: 12px;
+                font-size: 10px;
+            }
+
+            .sidebar-user {
+                padding: 6px;
+                margin-bottom: 8px;
+                gap: 8px;
+            }
+
+            .sidebar-avatar {
+                width: 24px;
+                height: 24px;
+                font-size: 10px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .container {
+                padding: 10px;
+            }
+
+            .page-header h1 {
+                font-size: 18px;
+            }
+
+            .section {
+                padding: 12px;
+                margin-bottom: 10px;
+            }
+
+            .stats-grid {
+                gap: 8px;
+            }
+
+            .stat-card {
+                padding: 12px;
+            }
+
+            .stat-value {
+                font-size: 18px;
+            }
+
+            .quick-commands {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 5px;
+            }
+
+            .quick-btn {
+                padding: 6px 6px;
+                font-size: 9px;
+            }
+
+            .btn {
+                padding: 8px 12px;
+                font-size: 10px;
+            }
+
+            .input-wrapper {
+                min-width: auto;
+            }
+
+            .navbar {
+                height: 52px;
+                padding: 0 10px;
+            }
+
+            .nav-title {
+                font-size: 14px;
+            }
+
+            .nav-content {
+                gap: 8px;
+            }
+
+            .nav-actions {
+                gap: 6px;
+            }
+
+            .user-avatar {
+                width: 28px;
+                height: 28px;
+                font-size: 10px;
+            }
+
+            .status-badge {
+                display: none;
+            }
+
+            .cards-grid {
+                gap: 8px;
+            }
+
+            .info-card {
+                padding: 10px;
+            }
+
+            .info-card h3 {
+                font-size: 11px;
+            }
+
+            .info-card p {
+                font-size: 9px;
+            }
+
+            .section-title {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -939,56 +1425,52 @@
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="sidebar-logo">⚡</div>
-            <div>Command Sync Pro</div>
+            <div>Neura Sync</div>
         </div>
         <nav class="sidebar-nav">
             <div class="nav-section">
                 <div class="nav-section-title">Main Menu</div>
-                <div class="nav-item active" onclick="switchPage('dashboard')">
+                <div class="nav-item active" onclick="switchPage(event, 'dashboard')">
                     <span class="nav-icon">📊</span>
                     <span>Dashboard</span>
                 </div>
-                <div class="nav-item" onclick="switchPage('commands')">
+                <div class="nav-item" onclick="switchPage(event, 'commands')">
                     <span class="nav-icon">📤</span>
                     <span>Send Commands</span>
                 </div>
-                <div class="nav-item" onclick="switchPage('history')">
+                <div class="nav-item" onclick="switchPage(event, 'history')">
                     <span class="nav-icon">📋</span>
-                    <span>History & Logs</span>
+                    <span>History</span>
                 </div>
-                <div class="nav-item" onclick="switchPage('analytics')">
+                <div class="nav-item" onclick="switchPage(event, 'analytics')">
                     <span class="nav-icon">📈</span>
                     <span>Analytics</span>
                 </div>
             </div>
             <div class="nav-section">
                 <div class="nav-section-title">Management</div>
-                <div class="nav-item" onclick="switchPage('devices')">
+                <div class="nav-item" onclick="switchPage(event, 'devices')">
                     <span class="nav-icon">🌍</span>
-                    <span>Connected Devices</span>
+                    <span>Devices</span>
                 </div>
-                <div class="nav-item" onclick="switchPage('sessions')">
+                <div class="nav-item" onclick="switchPage(event, 'sessions')">
                     <span class="nav-icon">🔄</span>
-                    <span>Active Sessions</span>
+                    <span>Sessions</span>
                 </div>
-                <div class="nav-item" onclick="switchPage('templates')">
+                <div class="nav-item" onclick="switchPage(event, 'templates')">
                     <span class="nav-icon">📝</span>
-                    <span>Command Templates</span>
+                    <span>Templates</span>
                 </div>
             </div>
             <div class="nav-section">
                 <div class="nav-section-title">System</div>
-                <div class="nav-item" onclick="switchPage('settings')">
+                <div class="nav-item" onclick="switchPage(event, 'settings')">
                     <span class="nav-icon">⚙️</span>
                     <span>Settings</span>
                 </div>
-                <div class="nav-item" onclick="switchPage('help')">
+                <div class="nav-item" onclick="switchPage(event, 'help')">
                     <span class="nav-icon">❓</span>
-                    <span>Help & Docs</span>
-                </div>
-                <div class="nav-item" onclick="switchPage('about')">
-                    <span class="nav-icon">ℹ️</span>
-                    <span>About</span>
+                    <span>Help</span>
                 </div>
             </div>
         </nav>
@@ -996,12 +1478,11 @@
             <div class="sidebar-user">
                 <div class="sidebar-avatar">CS</div>
                 <div>
-                    <div style="font-size: 12px; font-weight: 700; color: var(--gray-900);">Command Sync</div>
-                    <div style="font-size: 11px; color: var(--success);">● Online</div>
+                    <div style="font-size: 11px; font-weight: 700; color: var(--gray-900);">Neura Sync</div>
+                    <div style="font-size: 10px; color: var(--success);">● Online</div>
                 </div>
             </div>
-            <p style="margin-top: 12px;">Version 2.0.0</p>
-            <p style="margin-top: 8px;">© 2025 Enterprise</p>
+            <p style="margin-top: 8px;">v2.0.0</p>
         </div>
     </div>
 
@@ -1013,7 +1494,7 @@
                 <div class="nav-left">
                     <div>
                         <div class="nav-title" id="pageTitle">Dashboard</div>
-                        <div class="nav-subtitle" id="pageSubtitle">Real-time monitoring and control</div>
+                        <div class="nav-subtitle" id="pageSubtitle">Real-time monitoring</div>
                     </div>
                 </div>
                 <div class="nav-actions">
@@ -1036,10 +1517,9 @@
                     <p>Real-time monitoring and control of all connected browsers</p>
                 </div>
 
-                <!-- Quick Command Section -->
-                <div class="section" style="background: linear-gradient(135deg, #dbeafe 0%, #ede9fe 100%); border-color: #bfdbfe; position: relative;">
+                <div class="section" style="background: linear-gradient(135deg, #dbeafe 0%, #ede9fe 100%); border-color: #bfdbfe;">
                     <div class="section-title" style="color: #0c2d6b;">⚡ Quick Command</div>
-                    <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px;">
+                    <div class="quick-commands" style="margin-top: 16px;">
                         <button class="quick-btn" onclick="insertCommand('open https://github.com')" style="background: linear-gradient(135deg, #fff, #f0f9ff); border: 2px solid #bfdbfe;">📌 GitHub</button>
                         <button class="quick-btn" onclick="insertCommand('open https://stackoverflow.com')" style="background: linear-gradient(135deg, #fff, #f0f9ff); border: 2px solid #bfdbfe;">📚 Stack Overflow</button>
                         <button class="quick-btn" onclick="insertCommand('open https://google.com')" style="background: linear-gradient(135deg, #fff, #f0f9ff); border: 2px solid #bfdbfe;">🔍 Google</button>
@@ -1048,12 +1528,9 @@
                         <button class="quick-btn" onclick="insertCommand('search javascript tutorial')" style="background: linear-gradient(135deg, #fff, #f0f9ff); border: 2px solid #bfdbfe;">📖 JS Tutorial</button>
                     </div>
                     <div class="input-group" style="margin-top: 0;">
-                        <div class="input-wrapper" style="position: relative;">
+                        <div class="input-wrapper">
                             <label class="input-label">Command</label>
-                            <div style="position: relative;">
-                                <input type="text" id="dashboardCommandInput" placeholder="Type or select from buttons above..." autocomplete="off" style="background: white; padding-right: 40px;">
-                                <div style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #999; font-size: 12px; pointer-events: none;">⏎</div>
-                            </div>
+                            <input type="text" id="dashboardCommandInput" placeholder="Type or select from buttons above..." autocomplete="off">
                         </div>
                         <button class="btn" onclick="sendCommandDashboard()" style="align-self: flex-end;">Send</button>
                     </div>
@@ -1146,7 +1623,7 @@
 
                 <div class="section">
                     <div class="section-title">📤 Command Console</div>
-                    <div class="section-subtitle" style="margin-bottom: 20px;">Type and send commands to all connected browsers</div>
+                    <div class="section-subtitle">Type and send commands to all connected browsers</div>
 
                     <div class="alert alert-info">
                         <span class="alert-icon">ℹ️</span>
@@ -1176,30 +1653,12 @@
                     </div>
                 </div>
 
-                <!-- Scheduled Commands -->
-                <div class="section">
-                    <div class="section-title">⏰ Schedule Command (Coming Soon)</div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;">
-                        <div class="input-wrapper">
-                            <label class="input-label">Select Time</label>
-                            <input type="time" disabled style="padding: 10px; border: 1px solid var(--gray-300); border-radius: 6px; opacity: 0.6;">
-                        </div>
-                        <div class="input-wrapper">
-                            <label class="input-label">Select Command</label>
-                            <select disabled style="padding: 10px; border: 1px solid var(--gray-300); border-radius: 6px; opacity: 0.6;">
-                                <option>-- Scheduled commands coming soon --</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button class="btn btn-secondary" style="margin-top: 16px; opacity: 0.6;" disabled>Schedule Command</button>
-                </div>
-
                 <!-- Batch Operations -->
                 <div class="section">
                     <div class="section-title">🔄 Batch Commands</div>
                     <div class="input-wrapper" style="margin-bottom: 16px;">
                         <label class="input-label">Enter Multiple Commands (one per line)</label>
-                        <textarea id="batchCommands" placeholder="open https://github.com&#10;search python&#10;open https://google.com" style="width: 100%; height: 120px; padding: 12px; border: 1px solid var(--gray-200); border-radius: 6px; font-family: monospace; font-size: 12px; resize: vertical;"></textarea>
+                        <textarea id="batchCommands" placeholder="open https://github.com&#10;search python&#10;open https://google.com" style="height: 120px;"></textarea>
                     </div>
                     <button class="btn" onclick="executeBatchCommands()">▶️ Execute Batch</button>
                     <div id="batchStatus" style="margin-top: 16px; color: var(--gray-600); font-size: 13px;"></div>
@@ -1253,6 +1712,24 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="section">
+                    <div class="section-header">
+                        <div>
+                            <div class="section-title">⏱️ Recent Commands & Favorites</div>
+                        </div>
+                    </div>
+                    <div class="tabs">
+                        <button class="tab active" onclick="switchTab(event, 'recent')">Recent</button>
+                        <button class="tab" onclick="switchTab(event, 'favorites')">⭐ Favorites</button>
+                    </div>
+                    <div id="recent-tab" class="tab-content">
+                        <div id="recentCommands"></div>
+                    </div>
+                    <div id="favorites-tab" class="tab-content" style="display:none;">
+                        <div id="favoriteCommands"></div>
+                    </div>
+                </div>
             </div>
 
             <!-- Analytics Page -->
@@ -1260,6 +1737,28 @@
                 <div class="page-header">
                     <h1>Analytics & Reports</h1>
                     <p>Detailed analytics and performance reports</p>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">📊 Quick Stats</div>
+                    <div class="stats-mini">
+                        <div class="stat-mini">
+                            <div class="stat-mini-label">Today's Commands</div>
+                            <div class="stat-mini-value" id="todayCommands">0</div>
+                        </div>
+                        <div class="stat-mini">
+                            <div class="stat-mini-label">Avg Response</div>
+                            <div class="stat-mini-value" id="avgResponseMini">0ms</div>
+                        </div>
+                        <div class="stat-mini">
+                            <div class="stat-mini-label">Session Active</div>
+                            <div class="stat-mini-value" id="sessionActive">Yes</div>
+                        </div>
+                        <div class="stat-mini">
+                            <div class="stat-mini-label">Commands/Hour</div>
+                            <div class="stat-mini-value" id="cmdPerHour">0</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="stats-grid">
@@ -1385,6 +1884,16 @@
                             <p><code>search python programming</code></p>
                             <button class="btn btn-sm" onclick="quickCommand('search python programming')" style="margin-top: 12px;">Use</button>
                         </div>
+                        <div class="info-card">
+                            <h3>Open MDN Docs</h3>
+                            <p><code>open https://developer.mozilla.org</code></p>
+                            <button class="btn btn-sm" onclick="quickCommand('open https://developer.mozilla.org')" style="margin-top: 12px;">Use</button>
+                        </div>
+                        <div class="info-card">
+                            <h3>Search Web Dev</h3>
+                            <p><code>search web development</code></p>
+                            <button class="btn btn-sm" onclick="quickCommand('search web development')" style="margin-top: 12px;">Use</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1471,68 +1980,10 @@
                     </div>
                 </div>
             </div>
-
-            <!-- About Page -->
-            <div id="about-page" class="page-content">
-                <div class="page-header">
-                    <h1>About Command Sync Pro</h1>
-                    <p>Enterprise-grade cross-browser command synchronization system</p>
-                </div>
-
-                <div class="section">
-                    <div class="section-title">ℹ️ Product Information</div>
-                    <div class="cards-grid">
-                        <div class="info-card">
-                            <h3>Version</h3>
-                            <p><code>2.0.0</code></p>
-                        </div>
-                        <div class="info-card">
-                            <h3>Build Date</h3>
-                            <p><code>November 2025</code></p>
-                        </div>
-                        <div class="info-card">
-                            <h3>Technology Stack</h3>
-                            <p><code>WebSocket + Modern JS</code></p>
-                        </div>
-                        <div class="info-card">
-                            <h3>License</h3>
-                            <p><code>MIT License</code></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <div class="section-title">🎯 Key Features</div>
-                    <ul style="margin-top: 20px; list-style: none;">
-                        <li style="padding: 12px 0; border-bottom: 1px solid var(--gray-200); display: flex; gap: 12px;">
-                            <span style="font-size: 18px;">✅</span>
-                            <div>
-                                <strong style="color: var(--gray-900);">Real-time Command Broadcasting</strong>
-                                <p style="font-size: 12px; color: var(--gray-500); margin-top: 4px;">Instant execution across all connected browsers</p>
-                            </div>
-                        </li>
-                        <li style="padding: 12px 0; border-bottom: 1px solid var(--gray-200); display: flex; gap: 12px;">
-                            <span style="font-size: 18px;">✅</span>
-                            <div>
-                                <strong style="color: var(--gray-900);">Advanced Analytics</strong>
-                                <p style="font-size: 12px; color: var(--gray-500); margin-top: 4px;">Detailed performance metrics and monitoring</p>
-                            </div>
-                        </li>
-                        <li style="padding: 12px 0; display: flex; gap: 12px;">
-                            <span style="font-size: 18px;">✅</span>
-                            <div>
-                                <strong style="color: var(--gray-900);">Secure Sandbox Execution</strong>
-                                <p style="font-size: 12px; color: var(--gray-500); margin-top: 4px;">All commands validated for safety</p>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
         </div>
     </div>
 
     <script>
-        // Application State
         let appState = {
             commandsSent: 0,
             startTime: Date.now(),
@@ -1541,31 +1992,29 @@
             avgResponse: Math.random() * 50 + 30,
             recentCommands: [],
             favorites: [],
-            commandHistory: {}
         };
 
-        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             updateTime();
             updateMetrics();
             setInterval(updateTime, 1000);
             setInterval(updateMetrics, 2000);
+
             document.getElementById('commandInput').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') sendCommand();
             });
+
             document.getElementById('dashboardCommandInput').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') sendCommandDashboard();
             });
         });
 
-        // Update Time
         function updateTime() {
             const now = new Date();
             const time = now.toLocaleTimeString('en-US', { hour12: false });
             document.getElementById('currentTime').textContent = time;
         }
 
-        // Update Metrics
         function updateMetrics() {
             const elapsed = Math.floor((Date.now() - appState.startTime) / 1000);
             const hours = Math.floor(elapsed / 3600);
@@ -1581,48 +2030,41 @@
             document.getElementById('activeSessionCount').textContent = appState.clientCount;
             document.getElementById('deviceUptime').textContent = uptime;
             document.getElementById('dataTransfer').textContent = appState.commandsSent;
+            document.getElementById('totalDevices').textContent = appState.clientCount;
 
             document.getElementById('metric-active').textContent = appState.clientCount;
             document.getElementById('avgResponse').textContent = Math.round(appState.avgResponse) + 'ms';
             document.getElementById('analyticsLatency').textContent = Math.round(appState.avgResponse) + 'ms';
             document.getElementById('analyticsTotal').textContent = appState.commandsSent;
-
-            updateDashboardStats();
+            document.getElementById('todayCommands').textContent = appState.commandsSent;
+            document.getElementById('avgResponseMini').textContent = Math.round(appState.avgResponse) + 'ms';
+            document.getElementById('cmdPerHour').textContent = hours > 0 ? Math.round(appState.commandsSent / hours) : appState.commandsSent;
         }
 
-        // Send Command
         function sendCommand() {
             const input = document.getElementById('commandInput');
             const command = input.value.trim();
-
             if (!command) return;
 
             appState.commandsSent++;
             appState.avgResponse = Math.random() * 50 + 25;
-
             addLog('sent', command);
             input.value = '';
-
             executeCommand(command);
         }
 
-        // Send Command from Dashboard
         function sendCommandDashboard() {
             const input = document.getElementById('dashboardCommandInput');
             const command = input.value.trim();
-
             if (!command) return;
 
             appState.commandsSent++;
             appState.avgResponse = Math.random() * 50 + 25;
-
             addLog('sent', command);
             input.value = '';
-
             executeCommand(command);
         }
 
-        // Execute Command
         function executeCommand(command) {
             if (command.startsWith('open')) {
                 const url = command.replace('open ', '').trim();
@@ -1634,30 +2076,28 @@
             }
         }
 
-        // Quick Command
         function quickCommand(cmd) {
+            if (!appState.recentCommands.includes(cmd)) {
+                appState.recentCommands.unshift(cmd);
+            }
             document.getElementById('commandInput').value = cmd;
             sendCommand();
         }
 
-        // Insert Command
         function insertCommand(cmd) {
             document.getElementById('dashboardCommandInput').value = cmd;
             document.getElementById('dashboardCommandInput').focus();
         }
 
-        // Add Log
         function addLog(type, message) {
             const log = {
                 time: new Date().toLocaleTimeString('en-US', { hour12: false }),
                 type: type,
                 message: message,
-                status: 'success'
             };
 
             appState.logs.unshift(log);
 
-            // Add to recent commands if it's a sent command
             if (type === 'sent' && !appState.recentCommands.includes(message)) {
                 appState.recentCommands.unshift(message);
             }
@@ -1666,10 +2106,8 @@
             renderRecentAndFavorites();
         }
 
-        // Render Logs
         function renderLogs() {
             const container = document.getElementById('logContainer');
-
             if (appState.logs.length === 0) {
                 container.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><div>Waiting for commands and system events...</div></div>';
                 return;
@@ -1684,8 +2122,7 @@
             `).join('');
         }
 
-        // Switch Tab
-        function switchPage(page) {
+        function switchPage(event, page) {
             document.querySelectorAll('.page-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
 
@@ -1704,14 +2141,25 @@
                 templates: 'Command Templates',
                 settings: 'Settings',
                 help: 'Help & Documentation',
-                about: 'About'
+            };
+
+            const subtitles = {
+                dashboard: 'Real-time monitoring',
+                commands: 'Execute commands instantly',
+                history: 'View command history',
+                analytics: 'Performance reports',
+                devices: 'Monitor browsers',
+                sessions: 'Manage sessions',
+                templates: 'Saved commands',
+                settings: 'Preferences',
+                help: 'Documentation',
             };
 
             document.getElementById('pageTitle').textContent = titles[page] || 'Dashboard';
+            document.getElementById('pageSubtitle').textContent = subtitles[page] || 'System';
         }
 
-        // Switch Tab (Recent/Favorites)
-        function switchTab(tab) {
+        function switchTab(event, tab) {
             document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
 
@@ -1719,7 +2167,6 @@
             document.getElementById(tab + '-tab').style.display = 'block';
         }
 
-        // Add to Favorites
         function toggleFavorite(command) {
             const index = appState.favorites.indexOf(command);
             if (index > -1) {
@@ -1730,55 +2177,37 @@
             renderRecentAndFavorites();
         }
 
-        // Render Recent Commands and Favorites
         function renderRecentAndFavorites() {
             const recentDiv = document.getElementById('recentCommands');
             const favDiv = document.getElementById('favoriteCommands');
 
             if (!recentDiv || !favDiv) return;
 
-            // Recent
             if (appState.recentCommands.length === 0) {
                 recentDiv.innerHTML = '<div style="color: var(--gray-400); font-size: 13px; text-align: center; padding: 20px;">No recent commands yet</div>';
             } else {
                 recentDiv.innerHTML = appState.recentCommands.slice(0, 10).map(cmd => `
                     <div class="command-history-item">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span style="flex: 1; word-break: break-all;">${cmd}</span>
-                            <button class="favorite-btn ${appState.favorites.includes(cmd) ? 'active' : ''}" onclick="toggleFavorite('${cmd.replace(/'/g, "\\'")}')">
-                                ${appState.favorites.includes(cmd) ? '⭐' : '☆'}
-                            </button>
-                            <button class="copy-btn" onclick="copyCommand('${cmd.replace(/'/g, "\\'")}')" style="margin-left: 8px;">📋 Copy</button>
-                            <button class="copy-btn" onclick="quickCommand('${cmd.replace(/'/g, "\\'")}')" style="margin-left: 4px; background: var(--primary); color: white; border-color: var(--primary);">Run</button>
-                        </div>
+                        <span style="flex: 1; word-break: break-all;">${cmd}</span>
+                        <button class="favorite-btn ${appState.favorites.includes(cmd) ? 'active' : ''}" onclick="toggleFavorite('${cmd.replace(/'/g, "\\'")}')" title="Add to favorites">
+                            ${appState.favorites.includes(cmd) ? '⭐' : '☆'}
+                        </button>
                     </div>
                 `).join('');
             }
 
-            // Favorites
             if (appState.favorites.length === 0) {
-                favDiv.innerHTML = '<div style="color: var(--gray-400); font-size: 13px; text-align: center; padding: 20px;">No favorites yet. Click ⭐ to add!</div>';
+                favDiv.innerHTML = '<div style="color: var(--gray-400); font-size: 13px; text-align: center; padding: 20px;">No favorites yet. Click ☆ to add!</div>';
             } else {
                 favDiv.innerHTML = appState.favorites.map(cmd => `
                     <div class="command-history-item">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span style="flex: 1; word-break: break-all;">${cmd}</span>
-                            <button class="favorite-btn active" onclick="toggleFavorite('${cmd.replace(/'/g, "\\'")}')" style="margin-left: 8px;">⭐</button>
-                            <button class="copy-btn" onclick="copyCommand('${cmd.replace(/'/g, "\\'")}')" style="margin-left: 8px;">📋 Copy</button>
-                            <button class="copy-btn" onclick="quickCommand('${cmd.replace(/'/g, "\\'")}')" style="margin-left: 4px; background: var(--primary); color: white; border-color: var(--primary);">Run</button>
-                        </div>
+                        <span style="flex: 1; word-break: break-all;">${cmd}</span>
+                        <button class="favorite-btn active" onclick="toggleFavorite('${cmd.replace(/'/g, "\\'")}')" title="Remove from favorites">⭐</button>
                     </div>
                 `).join('');
             }
         }
 
-        // Copy Command
-        function copyCommand(command) {
-            navigator.clipboard.writeText(command);
-            alert('Command copied to clipboard!');
-        }
-
-        // Execute Batch Commands
         function executeBatchCommands() {
             const textarea = document.getElementById('batchCommands');
             const commands = textarea.value.split('\n').filter(cmd => cmd.trim());
@@ -1796,7 +2225,9 @@
                     const trimmed = cmd.trim();
                     if (trimmed) {
                         appState.commandsSent++;
-                        appState.recentCommands.unshift(trimmed);
+                        if (!appState.recentCommands.includes(trimmed)) {
+                            appState.recentCommands.unshift(trimmed);
+                        }
                         addLog('sent', trimmed);
                         executeCommand(trimmed);
                         statusDiv.innerHTML = `✅ Executed ${index + 1}/${commands.length} commands`;
@@ -1809,17 +2240,4 @@
                 renderRecentAndFavorites();
             }, commands.length * 500);
         }
-
-        // Update Recent Commands Display on Dashboard
-        function updateDashboardStats() {
-            const elapsed = Math.floor((Date.now() - appState.startTime) / 1000);
-            const hours = Math.floor(elapsed / 3600);
-
-            document.getElementById('todayCommands').textContent = appState.commandsSent;
-            document.getElementById('avgResponseMini').textContent = Math.round(appState.avgResponse) + 'ms';
-            document.getElementById('sessionActive').textContent = 'Yes';
-            document.getElementById('cmdPerHour').textContent = hours > 0 ? Math.round(appState.commandsSent / hours) : appState.commandsSent;
-        }
     </script>
-</body>
-</html>
