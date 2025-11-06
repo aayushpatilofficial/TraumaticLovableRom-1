@@ -1988,7 +1988,7 @@
             commandsSent: 0,
             startTime: Date.now(),
             logs: [],
-            clientCount: 1,
+            clientCount: 10,
             avgResponse: Math.random() * 50 + 30,
             recentCommands: [],
             favorites: [],
@@ -2066,6 +2066,14 @@
         }
 
         function executeCommand(command) {
+            // Simulate execution on all connected browsers
+            for (let i = 0; i < appState.clientCount; i++) {
+                setTimeout(() => {
+                    addLog('received', `Browser ${i + 1}: Executing "${command}"`);
+                }, i * 100);
+            }
+
+            // Execute on current browser
             if (command.startsWith('open')) {
                 const url = command.replace('open ', '').trim();
                 window.open(url, '_blank');
